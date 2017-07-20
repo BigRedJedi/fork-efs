@@ -165,3 +165,17 @@ def portfolio(request,pk):
    return render(request, 'portfolio/portfolio.html', {'customers': customers, 'investments': investments,
                                                       'stocks': stocks,
                                                       'sum_acquired_value': sum_acquired_value,})
+
+
+#Added per step 3 of 1.3
+def portfolio(request):
+    customers = Customer.objects.filter(created_date__lte=timezone.now())
+    investments = Investment.objects.all()
+    stocks = Stock.objects.all()
+    sum_recent_value = Investment.objects.all().aggregate(Sum('recent_value'))
+    sum_acquired_value = Investment.objects.all().aggregate(Sum('acquired_value'))
+
+    return render(request, 'customers/portfolio.html', {'customers': customers, 'investments': investments,
+                                                        'stocks': stocks,
+                                                        'sum_recent_value': sum_recent_value,
+                                                        'sum_acquired_value': sum_acquired_value, })
