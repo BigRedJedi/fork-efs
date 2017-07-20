@@ -153,7 +153,8 @@ def investment_delete(request, pk):
 #End of added Investment CRUD methods
 
 
-@login_required
+
+'''
 def portfolio(request,pk):
    customer = get_object_or_404(Customer, pk=pk)
    customers = Customer.objects.filter(created_date__lte=timezone.now())
@@ -165,8 +166,9 @@ def portfolio(request,pk):
    return render(request, 'portfolio/portfolio.html', {'customers': customers, 'investments': investments,
                                                       'stocks': stocks,
                                                       'sum_acquired_value': sum_acquired_value,})
+'''
 
-
+@login_required
 #Added per step 3 of 1.3
 def portfolio(request):
     customers = Customer.objects.filter(created_date__lte=timezone.now())
