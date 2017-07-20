@@ -7,6 +7,18 @@ from .forms import *
 from django.db.models import Sum
 
 
+def portfolio(request):
+    customers = Customer.objects.filter(created_date__lte=timezone.now())
+    investments = Investment.objects.all()
+    stocks = Stock.objects.all()
+    sum_recent_value = Investment.objects.all().aggregate(Sum('recent_value'))
+    sum_acquired_value = Investment.objects.all().aggregate(Sum('acquired_value'))
+
+    return render(request, 'customers/portfolio.html', {'customers': customers, 'investments': investments,
+                                                        'stocks': stocks,
+                                                        'sum_recent_value': sum_recent_value,
+                                                        'sum_acquired_value': sum_acquired_value, })
+
 
 def home(request):
    return render(request, 'portfolio/home.html',
@@ -153,7 +165,6 @@ def investment_delete(request, pk):
 #End of added Investment CRUD methods
 
 
-
 @login_required
 def portfolio(request,pk):
    customer = get_object_or_404(Customer, pk=pk)
@@ -161,23 +172,11 @@ def portfolio(request,pk):
    investments =Investment.objects.filter(customer=pk)
    stocks = Stock.objects.filter(customer=pk)
    sum_acquired_value = Investment.objects.filter(customer=pk).aggregate(Sum('acquired_value'))
+   sum_recent_value = Investment.objects.filter(customer=pk).aggregate(Sum('recent_value'))
+
 
 
    return render(request, 'portfolio/portfolio.html', {'customers': customers, 'investments': investments,
                                                       'stocks': stocks,
-                                                      'sum_acquired_value': sum_acquired_value,})
-
-
-#Added per step 3 of 1.3
-def portfolio(request,pk):
-    customers = Customer.objects.filter(created_date__lte=timezone.now())
-    investments = Investment.objects.all()
-    stocks = Stock.objects.all()
-    sum_recent_value = Investment.objects.all().aggregate(Sum('recent_value'))
-    sum_acquired_value = Investment.objects.all().aggregate(Sum('acquired_value'))
-
-### Pick up right here, Kyle!!!
-    return render(request, 'customers/portfolio.html', {'customers': customers, 'investments': investments,
-                                                        'stocks': stocks,
-                                                        'sum_recent_value': sum_recent_value,
-                                                        'sum_acquired_value': sum_acquired_value, })
+                                                      'sum_acquired_value': sum_acquired_value,
+                                                      'sum_recent_value': sum_recent_value,})
