@@ -154,7 +154,7 @@ def investment_delete(request, pk):
 
 
 
-'''
+@login_required
 def portfolio(request,pk):
    customer = get_object_or_404(Customer, pk=pk)
    customers = Customer.objects.filter(created_date__lte=timezone.now())
@@ -166,17 +166,17 @@ def portfolio(request,pk):
    return render(request, 'portfolio/portfolio.html', {'customers': customers, 'investments': investments,
                                                       'stocks': stocks,
                                                       'sum_acquired_value': sum_acquired_value,})
-'''
 
-@login_required
+
 #Added per step 3 of 1.3
-def portfolio(request):
+def portfolio(request,pk):
     customers = Customer.objects.filter(created_date__lte=timezone.now())
     investments = Investment.objects.all()
     stocks = Stock.objects.all()
     sum_recent_value = Investment.objects.all().aggregate(Sum('recent_value'))
     sum_acquired_value = Investment.objects.all().aggregate(Sum('acquired_value'))
 
+### Pick up right here, Kyle!!!
     return render(request, 'customers/portfolio.html', {'customers': customers, 'investments': investments,
                                                         'stocks': stocks,
                                                         'sum_recent_value': sum_recent_value,
